@@ -1,0 +1,60 @@
+html,body {
+  height:100%;
+  width:100%;
+  margin:0;
+  overflow:hidden;
+  font-family: Geneva, Arial, Helvetica, sans-serif;
+}
+
+pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+#map{
+  padding:0;
+}
+
+#header{
+  font-size: 1.1em;
+  font-family: sans-serif;
+  padding-left: 1em;
+  padding-top:4px;
+  color:#660000;
+}
+
+#search {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  top: 114px;
+  left: 74px;
+}
+
+.disabledContent {
+  pointer-events: none !important;
+  opacity: 0.4 !important;
+}
+.searchInput {
+   width: 180px !important;
+}
+.templatePicker {
+  border: none;
+}
+.dijitTitlePane {
+  margin-top: 280px !important;
+}
+.dijitTitlePane {
+  background-color: #FFFFFF;
+  border: 1px solid #57585A;
+  border-radius: 4px !important;
+}
+.dijitTitlePaneTitleHover {
+  /*background-color: red !important;*/
+
+}
+.dj_ie .infowindow .window .top .right .user .content { position: relative; }
+.dj_ie .simpleInfoWindow .content { position: relative; }

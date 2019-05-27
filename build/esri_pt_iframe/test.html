@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>Simple Map</title>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.13/esri/css/esri.css">
+    <style>
+      html, body, #map {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #FFF;
+        overflow: hidden;
+        font-family: "Trebuchet MS";
+      }
+    </style>
+    <script src="http://js.arcgis.com/3.13/"></script>
+    <script>
+      var map;
+
+      require(["esri/basemaps", "esri/map", "dojo/domReady!"], function(esriBasemaps, Map) {
+        esriBasemaps.myBasemap = {
+          baseMapLayers: [
+            {
+              url: ""
+            }
+          ],
+          title: "My Basemap"
+        };
+
+        setTimeout(function () {
+          map = new Map("map", {
+            basemap: "myBasemap",
+            center: {
+              "x": -959492.6682373729,
+              "y": 5036285.767262436,
+              "spatialReference": {
+                "wkid": 102100
+              }
+            },
+            lods: [{"level":0,"resolution":156543.033928,"scale":591657527.591555},{"level":1,"resolution":78271.516964,"scale":295828763.7957775},{"level":2,"resolution":39135.758482,"scale":147914381.89788875},{"level":3,"resolution":19567.879241,"scale":73957190.94894437},{"level":4,"resolution":9783.9396205,"scale":36978595.47447219},{"level":5,"resolution":4891.96981025,"scale":18489297.737236094},{"level":6,"resolution":2445.984905125,"scale":9244648.868618047},{"level":7,"resolution":1222.9924525625,"scale":4622324.434309023},{"level":8,"resolution":611.49622628125,"scale":2311162.2171545117},{"level":9,"resolution":305.748113140625,"scale":1155581.1085772559},{"level":10,"resolution":152.8740565703125,"scale":577790.5542886279},{"level":11,"resolution":76.43702828515625,"scale":288895.27714431396},{"level":12,"resolution":38.21851414257812,"scale":144447.63857215698},{"level":13,"resolution":19.10925707128906,"scale":72223.81928607849},{"level":14,"resolution":9.55462853564453,"scale":36111.909643039246},{"level":15,"resolution":4.777314267822265,"scale":18055.954821519623},{"level":16,"resolution":2.3886571339111327,"scale":9027.977410759811},{"level":17,"resolution":1.1943285669555663,"scale":4513.988705379906},{"level":18,"resolution":0.5971642834777832,"scale":2256.994352689953},{"level":19,"resolution":0.2985821417388916,"scale":1128.4971763449764},{"level":20,"resolution":0.1492910708694458,"scale":564.2485881724882}]
+            //center: [-122.45, 37.75], // longitude, latitude
+            //zoom: 13
+          });
+
+        }, 5000);
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
