@@ -164,7 +164,9 @@ class App extends Component {
           height="520px"
           id="iframe"
           display="initial"
-          position="relative"/>
+          position="relative"
+          scrolling="no"
+          />
 
           <div className="row justify-content-md-center">
 

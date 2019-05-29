@@ -3,6 +3,7 @@ let edificacaoCollection;
 require([
   "esri/map",
   "esri/tasks/GeometryService",
+  "esri/toolbars/draw",
 
   "esri/layers/ArcGISTiledMapServiceLayer",
   "esri/layers/FeatureLayer",
@@ -13,6 +14,8 @@ require([
   "esri/Color",
   "esri/symbols/SimpleMarkerSymbol",
   "esri/symbols/SimpleLineSymbol",
+  "esri/symbols/SimpleFillSymbol",
+  "esri/Color",
   "esri/renderers/SimpleRenderer",
   "esri/dijit/editing/Editor",
   "esri/dijit/editing/TemplatePicker",
@@ -36,10 +39,10 @@ require([
   "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
   "dojo/domReady!"
 ], function (
-  Map, GeometryService,
+  Map, GeometryService, draw,
   ArcGISTiledMapServiceLayer, FeatureLayer,
   Point, Geometry,
-  Color, SimpleMarkerSymbol, SimpleLineSymbol, SimpleRenderer,
+  Color, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, Color, SimpleRenderer,
   Editor, TemplatePicker, Search, BasemapGallery, PopupTemplate, Query,
   esriConfig, jsapiBundle,
   arrayUtils, parser, keys, dom, on, lang, topic, uuid,
@@ -198,9 +201,9 @@ require([
       map: map,
       templatePicker: templatePicker,
       layerInfos: layers,
-      toolbarVisible: false,
+      toolbarVisible: true,
        createOptions: {
-        polygonDrawTools: [ Editor.CREATE_TOOL_POLYGON]
+        polygonDrawTools: [ Editor.CREATE_TOOL_POLYGON ]
       },
       toolbarOptions: {
         reshapeVisible: false
@@ -209,7 +212,13 @@ require([
 
     let params = { settings: settings };
     let myEditor = new Editor(params, 'editorDiv');
-    myEditor.startup();
+
+    var sfs = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+              new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+              new Color([0, 0,0]), 2),new Color([0, 0, 0, 0.25]));
+
+    myEditor.startup();    
+    myEditor.drawingToolbar._settings.drawToolbar.setFillSymbol(sfs);
 
     function _addProcessing (processing, id) {
       if (!_containsProcessing(processing, id)) {

@@ -12,7 +12,7 @@ define([
         let wkid = AppConfig._mapConfig._spatialReference._wkid;
 
         let enderecamento =  `${service}/query?where=${where}&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&outFields=['features']&returnGeometry=true&returnTrueCurves=false&outSR={+wkid:+'${wkid}'+}+&returnIdsOnly=false&returnCountOnly=false&returnZ=false&returnM=false&returnDistinctValues=false&returnExtentsOnly=false&f=pjson`;
-        
+
         let response = await fetch(encodeURI(enderecamento));
         let data = await response.json();
 
@@ -27,8 +27,8 @@ define([
         };
 
         if ( !hasGeometry ) {
-            result.error = true;
-            result.message = `Não foi possível localizar endereço para arruamento: ${addr.arruamento}, número de policia: ${addr.numeroPolicia}`;
+            result.error = true;            
+            result.message = `Não conseguimos encontrar a rua: ${addr.arruamento} por favor use a pesquisa do canto superior esquerdo.`;
             return result;
         }
         result.geometry = hasResponse.features[0].geometry;

@@ -1,6 +1,8 @@
 define([
   "esri/map",
   "esri/layers/ArcGISDynamicMapServiceLayer",
+  "esri/SpatialReference",
+  "esri/geometry/Extent",
   "esri/dijit/Search",
   "esri/dijit/BasemapLayer",
   "esri/dijit/Basemap",
@@ -15,7 +17,7 @@ define([
   "dojo/html",
   "dojo/query",
   "dojo"
-], function (Map, ArcGISDynamicMapServiceLayer, Search, BasemapLayer, Basemap, BasemapGallery, Extent, ProjectParameters, GeometryService, DialogMessage, AppConfig, dom, on, html, query, dojo) {
+], function (Map, ArcGISDynamicMapServiceLayer, SpatialReference, Extent, Search, BasemapLayer, Basemap, BasemapGallery, Extent, ProjectParameters, GeometryService, DialogMessage, AppConfig, dom, on, html, query, dojo) {
 
   let _enableContent = (ids) => {
     ids.forEach(id => {
@@ -46,23 +48,9 @@ define([
   let loading = dom.byId("loadingImg");
   let elements = ["templateDiv", "search", "basemapGallery"];
 
-  let map = new Map("map", {
-    basemap: "satellite",
-    center: {
-      "x": -959492.6682373729,
-      "y": 5036285.767262436,
-      "spatialReference": {
-        "wkid": 102100
-      }
-    },
-    zoom: AppConfig._zoom._initialLevel,
-    lods: AppConfig._zoom._lods,
-    sliderStyle: "small"
-  });
-
-  var smaspcartoref = new ArcGISDynamicMapServiceLayer(AppConfig._mapConfig._basemap._url);
-  var cartoref = new BasemapLayer({ url: AppConfig._mapConfig._basemap._url });
-  var enderecamento = new BasemapLayer({ url: AppConfig._mapConfig._serviceLayers[0]._url });
+  let smaspcartoref = new ArcGISDynamicMapServiceLayer(AppConfig._mapConfig._basemap._url);
+  let cartoref = new BasemapLayer({ url: AppConfig._mapConfig._basemap._url });
+  let enderecamento = new BasemapLayer({ url: AppConfig._mapConfig._serviceLayers[0]._url });
 
   var basemap = new Basemap({
     layers:[cartoref, enderecamento],
@@ -70,7 +58,19 @@ define([
     thumbnailUrl: AppConfig._mapConfig._basemap._thumbnail
   });
 
-  var basemapGallery = new BasemapGallery({
+  let map = new Map("map", {
+    //basemap: "satellite",
+    center: AppConfig._mapConfig._center,
+    zoom: AppConfig._zoom._initialLevel,
+    lods: AppConfig._zoom._lods,
+    sliderStyle: "small"
+  });
+
+  //resolve _getInfo() error
+  map.spatialReference = new SpatialReference(AppConfig._mapConfig._spatialReference._wkid);
+  map.extent = new Extent(AppConfig._mapConfig._fullExtent);
+
+  let basemapGallery = new BasemapGallery({
     showArcGISBasemaps: true,
     map: map
   }, "basemapGallery");
@@ -90,9 +90,10 @@ define([
     DialogMessage.infoMessage('Erro', `não foi possível carregar a galeria de mapa base: ${msg.message}`)
   });
 
-  var search = new Search({
+  let search = new Search({
     map: map,
-    enableInfoWindow: false
+    enableInfoWindow: false,
+    enableHighlight: false
   }, "search");
   search.startup();
 
@@ -100,7 +101,8 @@ define([
     map: map,
     fullExtent : () => smaspcartoref.fullExtent,
     showLoading: () => _showLoading(),
-    hideLoading: () => _hideLoading()
+    hideLoading: () => _hideLoading(),
+    setBaseMapCartografia: () => basemapGallery.select("basemap_0")
   }
 
 });

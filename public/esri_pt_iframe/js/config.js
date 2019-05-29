@@ -24,7 +24,7 @@ var sigConfig = {
       { url: "/arcgis/rest/services/smaspenderecamento102100/MapServer", index: 0 }
     ],
     spatialReference: {
-      wkid : "102100"
+      wkid : 102100
     }
   },
   print: {

@@ -76,6 +76,8 @@ define([
             if (result && result.length && result[0] && result[0].geometry) {
               let graphic = new Graphic(result[0].geometry, null, null, null);
               let propriedadeExtent = graphicsUtils.graphicsExtent([graphic]);
+              layer.clearSelection();
+              MyMap.setBaseMapCartografia();
               MyMap
                 .map.setExtent(propriedadeExtent, true)
                 .then(() => {

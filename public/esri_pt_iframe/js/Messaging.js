@@ -30,7 +30,7 @@ define([
           console.log(`-----------onGeocode started------------`);
           MyMap.showLoading();
           if(!state || !state.arruamento){
-            DialogMessage.infoMessage('Erro', "Arruamento ou número de polícia inexistente ou inválido!");
+            DialogMessage.infoMessage('Erro', "Não conseguimos encontrar a rua, por favor use a pesquisa do canto superior esquerdo.");
             console.log(`state.arruamento not found on data`);
             console.log(`-----------onGeocode finished-----------`);
             MyMap.hideLoading();
@@ -49,7 +49,7 @@ define([
                   "wkid": 102100
                 }
               });
-              MyMap.map.centerAndZoom(center, AppConfig._zoom._initialLevel);              
+              MyMap.map.centerAndZoom(center, AppConfig._zoom._initialLevel);
               MyMap.hideLoading();
               return Promise.resolve();
             }
@@ -74,7 +74,7 @@ define([
               let numeroPolicia = state.numeroPolicia || "";
               let enderecamento = `${arruamento} ${numeroPolicia}`;
               console.log(err);
-              DialogMessage.infoMessage(`Erro: `, `Não foi possível localizar endereço para arruamento: ${arruamento}, número de policia: ${numeroPolicia}`);
+              DialogMessage.infoMessage(`Erro: `, `Não conseguimos encontrar a rua: ${addr.arruamento} por favor use a pesquisa do canto superior esquerdo.`);
               MyMap.map.setZoom(AppConfig._zoom._initialLevel);
               MyMap.map.setExtent(MyMap.fullExtent());
               MyMap.hideLoading();

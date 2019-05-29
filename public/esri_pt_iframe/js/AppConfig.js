@@ -23,6 +23,14 @@ define([
   let _initialResolution = hasZoom && hasZoom.initialResolution || 156543.033928;
   let _initialLevel = hasZoom && hasZoom.initialLevel || 0;
 
+  let _xmin = -968961.2571721097;
+  let _ymin = 5030602.386922678;
+  let _xmax = -950231.8846763826;
+  let _ymax = 5041715.163202765;
+
+  let _center_x = -959492.6682373729;
+  let _center_y = 5036285.767262436;
+
   let _createLods = (maxLevel, initialResolution, initialScale, from, to ) => {
     maxLevel = maxLevel || 24;
     from = from || 0;
@@ -60,7 +68,23 @@ define([
       _serviceLayers: hasServiceLayers && hasServiceLayers.map(sl => ({ _url: `${_host}${sl.url}`, _index: sl.index })),
       _featureLayers: hasFeatureLayers && hasFeatureLayers.map(fl => ({ _url: `${_host}${fl.url}`, _index: fl.index })),
       _spatialReference: {
-        _wkid: hasSpatialReference && hasSpatialReference.wkid || "102100"
+        _wkid: hasSpatialReference && hasSpatialReference.wkid || 102100
+      },
+      _center: {
+        x: _center_x,
+        y: _center_y,
+        spatialReference: {
+          wkid: hasSpatialReference && hasSpatialReference.wkid || 102100
+        }
+      },
+      _fullExtent: {
+        xmin: _xmin,
+        ymin: _ymin,
+        xmax: _xmax,
+        ymax: _ymax,
+        spatialReference: {
+          wkid: hasSpatialReference && hasSpatialReference.wkid || 102100
+        }
       }
     },
     _print: {
