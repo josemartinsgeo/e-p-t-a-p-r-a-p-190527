@@ -109,10 +109,11 @@ define([
     homeExtent = home.extent;
   });
 
+  /*
   home.on("home", function(){
     search.clear();
   });
-
+  */
   return {
     map: map,
     fullExtent : () => smaspcartoref.fullExtent,
