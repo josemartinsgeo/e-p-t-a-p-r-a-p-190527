@@ -7,6 +7,7 @@ define([
   "esri/dijit/BasemapLayer",
   "esri/dijit/Basemap",
   "esri/dijit/BasemapGallery",
+  "esri/dijit/HomeButton",
   "esri/geometry/Extent",
   "esri/tasks/ProjectParameters",
   "esri/tasks/GeometryService",
@@ -17,7 +18,7 @@ define([
   "dojo/html",
   "dojo/query",
   "dojo"
-], function (Map, ArcGISDynamicMapServiceLayer, SpatialReference, Extent, Search, BasemapLayer, Basemap, BasemapGallery, Extent, ProjectParameters, GeometryService, DialogMessage, AppConfig, dom, on, html, query, dojo) {
+], function (Map, ArcGISDynamicMapServiceLayer, SpatialReference, Extent, Search, BasemapLayer, Basemap, BasemapGallery, HomeButton, Extent, ProjectParameters, GeometryService, DialogMessage, AppConfig, dom, on, html, query, dojo) {
 
   let _enableContent = (ids) => {
     ids.forEach(id => {
@@ -46,11 +47,12 @@ define([
   }
 
   let loading = dom.byId("loadingImg");
-  let elements = ["templateDiv", "search", "basemapGallery"];
+  let elements = ["templateDiv", "search", "basemapGallery", "homeButton"];
 
   let smaspcartoref = new ArcGISDynamicMapServiceLayer(AppConfig._mapConfig._basemap._url);
   let cartoref = new BasemapLayer({ url: AppConfig._mapConfig._basemap._url });
   let enderecamento = new BasemapLayer({ url: AppConfig._mapConfig._serviceLayers[0]._url });
+  let homeExtent = { xmax: 0, xmin: 0, ymax: 0, ymin: 0 };
 
   var basemap = new Basemap({
     layers:[cartoref, enderecamento],
@@ -97,9 +99,24 @@ define([
   }, "search");
   search.startup();
 
+  var home = new HomeButton({
+    map: map,
+    extent: smaspcartoref.fullExtent
+  }, "homeButton");
+  home.startup();
+
+  home.on("load", function(){
+    homeExtent = home.extent;
+  });
+
+  home.on("home", function(){
+    search.clear();
+  });
+
   return {
     map: map,
     fullExtent : () => smaspcartoref.fullExtent,
+    homeExtent : () => homeExtent,
     showLoading: () => _showLoading(),
     hideLoading: () => _hideLoading(),
     setBaseMapCartografia: () => basemapGallery.select("basemap_0")

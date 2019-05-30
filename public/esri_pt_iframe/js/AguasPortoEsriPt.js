@@ -84,10 +84,10 @@ require([
     let changeFromNewExtent = levelChange && !changeFromMove && (!changeFromZoomIn || !changeFromZoomOut);
 
     let isCenter = extent && extent.extent &&
-                   extent.extent.xmax === -952154.7135219979 &&
-                   extent.extent.xmin === -966830.6229527479 &&
-                   extent.extent.ymax === 5040107.618676694 &&
-                   extent.extent.ymin === 5032463.915848179;
+    (extent.extent.xmax === AppConfig._mapConfig._fullExtent.xmax || extent.extent.xmax === MyMap.homeExtent().xmax) &&
+    (extent.extent.xmin === AppConfig._mapConfig._fullExtent.xmin || extent.extent.xmin === MyMap.homeExtent().xmin) &&
+    (extent.extent.ymax === AppConfig._mapConfig._fullExtent.ymax || extent.extent.ymax === MyMap.homeExtent().ymax) &&
+    (extent.extent.ymin === AppConfig._mapConfig._fullExtent.ymin || extent.extent.ymin === MyMap.homeExtent().ymin);
 
     if (!maxExtent) {
       maxExtent = extent.extent;
@@ -100,13 +100,15 @@ require([
       maxExtent = extent.extent;
       return;
     }
-
-    if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
+    
+	/**
+	if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
     ) {
       maxExtent = extent.extent;
       return;
-    }
-
+   }
+   */
+   
     let verifyExtent = changeFromMove || changeFromZoomOut;
     if ( verifyExtent && ((map.extent.xmin < maxExtent.xmin) ||
                           (map.extent.ymin < maxExtent.ymin) ||
@@ -215,9 +217,9 @@ require([
 
     var sfs = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
               new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
-              new Color([0, 0,0]), 2),new Color([0, 0, 0, 0.25]));
+              new Color([0, 0, 0]), 2),new Color([0, 0, 0, 0.25]));
 
-    myEditor.startup();    
+    myEditor.startup();
     myEditor.drawingToolbar._settings.drawToolbar.setFillSymbol(sfs);
 
     function _addProcessing (processing, id) {

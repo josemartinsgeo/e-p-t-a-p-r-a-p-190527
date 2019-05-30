@@ -31,7 +31,14 @@ pre {
   position: absolute;
   z-index: 2;
   top: 114px;
-  left: 74px;
+  left: 67px;
+}
+
+#homeButton {
+  position: absolute;
+  z-index: 2;
+  top: 184px;
+  left: 27px;
 }
 
 .disabledContent {
@@ -44,6 +51,17 @@ pre {
 .templatePicker {
   border: none;
 }
+.templatePicker .grid .item {
+  background-color: white !important;
+  border: 2px solid #0f2f7f !important; 
+  font: Regular,sans-serif;
+  font-family: inherit;
+  color: #0f2f7f !important;
+  padding: 7px 5px !important;
+  text-align: center;
+  display: inline-block;
+  font-size: 10px;
+ } 
 .dijitTitlePane {
   margin-top: 280px !important;
 }

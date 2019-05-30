@@ -100,15 +100,13 @@ require([
       maxExtent = extent.extent;
       return;
     }
-    
-	/**
-	if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
+
+    if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
     ) {
       maxExtent = extent.extent;
       return;
-   }
-   */
-   
+    }
+
     let verifyExtent = changeFromMove || changeFromZoomOut;
     if ( verifyExtent && ((map.extent.xmin < maxExtent.xmin) ||
                           (map.extent.ymin < maxExtent.ymin) ||
