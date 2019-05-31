@@ -1,5 +1,7 @@
 let propriedadeCollection;
 let edificacaoCollection;
+let myEditor;
+
 require([
   "esri/map",
   "esri/tasks/GeometryService",
@@ -83,12 +85,6 @@ require([
     let changeFromZoomOut = changeFromZoom && level < currentLevel;
     let changeFromNewExtent = levelChange && !changeFromMove && (!changeFromZoomIn || !changeFromZoomOut);
 
-    let isCenter = extent && extent.extent &&
-    (extent.extent.xmax === AppConfig._mapConfig._fullExtent.xmax || extent.extent.xmax === MyMap.homeExtent().xmax) &&
-    (extent.extent.xmin === AppConfig._mapConfig._fullExtent.xmin || extent.extent.xmin === MyMap.homeExtent().xmin) &&
-    (extent.extent.ymax === AppConfig._mapConfig._fullExtent.ymax || extent.extent.ymax === MyMap.homeExtent().ymax) &&
-    (extent.extent.ymin === AppConfig._mapConfig._fullExtent.ymin || extent.extent.ymin === MyMap.homeExtent().ymin);
-
     if (!maxExtent) {
       maxExtent = extent.extent;
     }
@@ -96,19 +92,24 @@ require([
     //Se houve alteração no extent por Zoom atualiza o currentZoom
     if (changeFromZoom) currentLevel = level;
 
+    /*
+    let isCenter = extent && extent.extent &&
+    (extent.extent.xmax === AppConfig._mapConfig._fullExtent.xmax || extent.extent.xmax === MyMap.homeExtent().xmax) &&
+    (extent.extent.xmin === AppConfig._mapConfig._fullExtent.xmin || extent.extent.xmin === MyMap.homeExtent().xmin) &&
+    (extent.extent.ymax === AppConfig._mapConfig._fullExtent.ymax || extent.extent.ymax === MyMap.homeExtent().ymax) &&
+    (extent.extent.ymin === AppConfig._mapConfig._fullExtent.ymin || extent.extent.ymin === MyMap.homeExtent().ymin);
+        
     if (isCenter) {
       maxExtent = extent.extent;
       return;
     }
-    
-	/**
-	if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
+    if (changeFromNewExtent && (currentLevel === beforeLevel || currentLevel === map.getMaxZoom() - 1)
     ) {
       maxExtent = extent.extent;
       return;
-   }
-   */
-   
+    }
+    */
+
     let verifyExtent = changeFromMove || changeFromZoomOut;
     if ( verifyExtent && ((map.extent.xmin < maxExtent.xmin) ||
                           (map.extent.ymin < maxExtent.ymin) ||
@@ -213,7 +214,7 @@ require([
     };
 
     let params = { settings: settings };
-    let myEditor = new Editor(params, 'editorDiv');
+    myEditor = new Editor(params, 'editorDiv');
 
     var sfs = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
               new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
@@ -258,6 +259,7 @@ require([
         console.log(`propriedade objectId: ${target.objectId} adicionada com sucesso.`);
         Localizacao.setPropriedade(target);
       }
+      myEditor.drawingToolbar.deactivate();
     }
 
     let propriedadeProcessingRemoval = [];
@@ -320,6 +322,7 @@ require([
           Localizacao.addEdificacao(target);
 	        console.log(`edificacao objectId: ${target.objectId} adicionada com sucesso.`);
           _removeProcessing(edificacaoProcessingAdding, target.objectId);
+          myEditor.drawingToolbar.deactivate();
           return;
       }
 

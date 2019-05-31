@@ -50,6 +50,13 @@ define([
   let elements = ["templateDiv", "search", "basemapGallery", "homeButton"];
 
   let smaspcartoref = new ArcGISDynamicMapServiceLayer(AppConfig._mapConfig._basemap._url);
+  smaspcartoref.on("error", function (msg) {
+    console.log("dynamic map service layer:  ", msg);
+    DialogMessage.infoMessage('Erro', msg.error.message);
+    _hideLoading();
+  });
+
+
   let cartoref = new BasemapLayer({ url: AppConfig._mapConfig._basemap._url });
   let enderecamento = new BasemapLayer({ url: AppConfig._mapConfig._serviceLayers[0]._url });
   let homeExtent = { xmax: 0, xmin: 0, ymax: 0, ymin: 0 };
@@ -90,6 +97,7 @@ define([
   basemapGallery.on("error", function (msg) {
     console.log("basemap gallery error:  ", msg);
     DialogMessage.infoMessage('Erro', `não foi possível carregar a galeria de mapa base: ${msg.message}`)
+    _hideLoading();
   });
 
   let search = new Search({
@@ -109,11 +117,10 @@ define([
     homeExtent = home.extent;
   });
 
-  /*
   home.on("home", function(){
     search.clear();
   });
-  */
+
   return {
     map: map,
     fullExtent : () => smaspcartoref.fullExtent,
