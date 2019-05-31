@@ -1,18 +1,101 @@
+Reunião - UBC 30/05 (Ana, Alison, Tarcisio)
 
-Certificação - OCAJP - Oracle Certified Associate Java se 7 Programmer I - 2015
+ARTEFATOS PARA EXECUÇÃO DO PROJETO =============================================
 
-Data Science, Introdução ao Python Pandas - Alura 2019 (12h)
-Machine Learning, Introdução ao sistemas de recomendações - Alura 2018 (8h)
-Programação orientada a objetos com Java - Coursera Instituto de Aeronáutica (2016 - (40h)
-Testes de programa Java - Extensão Universitária IME-USP Escola de Verão 2016 - (30h)
-Interfaces Web com HTML CSS JavaScript - Extensão Universitária IME-USP Escola de Verão 2016 - (30h)
-Extensão Universitária - Extensão Universitária IME-USP Escola de Verão 2015 Programação com Java (30h)
+1. XML's NF.............................................................(Tarcisio - Enviado via Slack)
+2. XML's Agentes........................................................(Tarcisio - Enviado via Slack)
+3. Carta de receita.....................................................(Tarcisio - Enviado via Slack)
+4. Relatório das notas que chegaram no Mega (Renata) em excel/csv.......(Ana/Rentana - Enviado via Email)
+5. Acesso a tabela/view/SOAP do mega que armazena as notas integradas...(Ana/Edivaldo)
+6. Conexão com BD do Dante..............................................(Tarcisio - Testar)
+7. Acesso API/Cache Correio.............................................(Ana/Tarcisio - Solicitar)
+8. Acesso API/Cache Serpro..............................................(Ana/Tarcisio - Solicitar)
+
+CONEXÕES =======================================================================
 
 
-Projeto BIP (BI Projetos) para Indústria Química
+NECESSIDADES ===================================================================
 
-O Projeto contemplou o desenvolvimento de um extrator de dados a partir de diversas bases (Access e SQL server), bem como a modelagem relacional de um banco análitico para o desenvolvimento de dashboards. Foram desenvolvidos quatro dashboards para acompanhamento de projetos em andamento e investimentos, com o objetivo de melhor gestão operacional e tomada de decisões.
+1. Desenvolver <script/etl/serviço> que realize a conciliação das NF's (Número, Valor e Imposto) enviadas a partir do Dante com Relatório interno (Carta de Receita) e Relatório Mega (Renata)
 
-O desenvolvimento do extrator contemplou a criação de dezesseis ETL's que alimentam o banco análitico periodicamente. Para cada ETL foi analisado onde e como o dado deveria ser representado no banco análitico, bem como a sua normalização e periodicidade de atualização. a análise foi realizada junto ao cliente para melhor e correto entendimento do negócio.
+1.1 Conciliação Dante
+1.1.1 Se NF automática então concilia com relatório (Carta de Receita não possui Número NF).
+1.1.2 Se NF manual então concilia com tabela (verificar no arquivo php) do Dante.
 
-A arquitetura do extrator foi desenvolvida para configuar e executar os ETL's com a preocupação de deixar a estrutura escalável para inclusão de novos ETL's que porventura sejam desenvolvidos, o extrator também possui logs detalhados de execução e mecânismos de tolerância a falha onde, cada ETL é executado de forma independente e a(s) eventuai(s) falha(s) que possam ocorrer na execução de um  ETL's não impactam na execução dos outros.
+- Reenvio de NF's faltantes para o mega desde JAN/2015.
+- Validar processo com dados de MAR/2019.
+- Será conciliado apenas CPF, Número e Valor da NF.
+- Existem notas enviadas automaticamente e manualmente, ambas permanecem na mesma tabela no Dante *
+  TABELA NF's do Dante - Carta de Receita = Notas manuais
+- NF's manuais emitidas por talão não serão conciliadas (Não existe controle).
+- NF's manuais emitidas no Dante não estão no relatório (Carta de Receita).
+
+* Existe alguma coluna que indique se esta é uma nota manual ou automática? Não.
+
+1.2 Conciliação Dante x Mega
+1.2.1 Conciliar com Relatório emitido no Mega pela Renata com as NF's integradas.
+      - Será conciliado apenas CPF, Número e Valor da NF
+      - Conciliar o que já foi recolhido com SPED com os dados do Dante.
+
+2. Desenvolvimento de validação via Tabela/EDI/SOAP proveniente do Mega de NF's integradas e/ou rejeitadas com (Número da NF e Motivo).
+
+2.1 Cenário 3 - Mega devolve XML com crítica (hoje não existe) e Dante desenvolve tratamento do arquivo.
+2.2 Cenário 1 - Dante passa a realizar integração via SOAP e trata os retornos enviados do Mega. (Desenvolvimento da
+integração via SOAP verificar se mesma estrutura de XML). (Preferencialmente)
+2.2 Cenário 4 - Dante desenvolve mecanismo de reenvio baseado no da pasta de erro (Não saberá o motivo do erro).
+2.3 Cenário 2 - Mega disponibiliza Tabela/View com Número, Valor, Status (Sucesso/Erro) e Motivo e Dante desenvolve tratamento das NF's integradas.
+
+- Integração de NF's hoje é realizada por NF (1 XML por NF) aproximadamente 13K/Mês.
+- Integração é realizada via EDI e não existe tratamento para arquivos com erro/rejeitados
+- Existe a possibilidade de integrar via SOAP (Verificar se é o mesmo XML e se possui retorno com crítica)
+- Verificação das notas integradas é manual (um usuário do mega fica observando uma listagem de notas integradas) e quando uma nota não é integrada por erro o mesmo informa manualmente a nota (número e erro) para que o Dante à reenvie.
+- Não existe nenhum controle do lado do Dante que valida as NF's integradas.
+- NF's integradas posteriomente a 2016 possuem campo <Deducao></Deducao> que indica na NF por exemplo bolsa de estudo (Aluno faz curso com parcela de R$1000,00 e possui desconto de 50% a NF é emitda com valor R$1000 e dedução com valor R$500)
+
+3. Cleanup dos dados dos XML *
+
+- Integração de NF's depende do envio do Agente (1 XML por Agente) aproximadamente 20K/Mês
+- Existem NF/Agentes que não são integrados por falhas nos dados enviados;
+- Problemas conhecidos nos dados:
+  * ENCODE;
+  * CEP INEXISTENTE;
+  * CEP INCOMPLETO;
+  * CIDADE INVÁLIDA (Exemplo Guaianases que não é cidade é distrito de SP);
+  * Problemas com Nome (Encode inválido);
+  * CPF;
+- A UBC possui acesso a API dos correios onde os dados de CEP/CIDADE podem ser validados;
+- A UBC possui acesso a API do serpro onde os dados NOME/CPF podem ser validados;
+
+4. Proposta de Execução
+
+Executar item 1.1 (Paralelo ao item 3 depende dos artefatos 1, 3, 6)
+Executar item 3   (Paralelo ao item 1 depende dos artefatos 2, 7 e 8)
+Executar item 1.2 (Depende da execução do item 1.1 e do artefato 4)
+Executar item 2   (Depende da execução do item 1 e 3 e do artefato 5)
+
+PERGUNTAS=======================================================================
+
+O que vocês esperam receber?
+
+Item 1: Relatório avaliando consistência dos dados enviados pelo Dante.
+Tarcisio/Ana R: Relatório
+
+Item 2: Implementação ou Relatório descrevendo estratégia de implementação do controle de NF's integradas
+Tarcisio R: Implementação
+
+Item 3: Implementação e execução de Script de clean up (higienização)?
+Tarcisio R: Relatório dos agentes com problemas.
+Ana: Relatório com sugestão de correção e possibilidade de correção da funcionalidade.
+
+Haverá deploy em algum dos itens?
+Item 2 - PHP/Postgres
+
+Se sim, como e onde serão realizados?
+Ambiente do Dante
+
+Existe alguma restrição de tecnologia para o desenvolvimento dos Scripts que serão utilizados nos itens 1 e 3?
+Item 1 - Sem restrições
+Item 3 - PHP/Postgres
+
+Prazo?
+R: Em conversa com a Ana combinamos de avaliar entregas parciais a partir da estimativa que faremos.
